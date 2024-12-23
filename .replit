@@ -1,8 +1,13 @@
-modules = ["python-3.12"]
+
+modules = ["python-3.12:v25-20240103-638702"]
 run = "python main.py dev"
+packager = "UPM"
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
 run = ["sh", "-c", "python main.py dev"]
+
+[unitTest]
+language = "python3"
