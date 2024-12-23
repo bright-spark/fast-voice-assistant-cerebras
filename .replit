@@ -1,7 +1,9 @@
 
 modules = ["python-3.12:v25-20240103-638702"]
 run = "python main.py dev"
-packager = "UPM"
+
+[packager]
+language = "python3"
 
 [nix]
 channel = "stable-24_05"
