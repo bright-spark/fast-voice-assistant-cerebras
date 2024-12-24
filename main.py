@@ -1,48 +1,60 @@
+
 import os
 import asyncio
-
 from livekit.agents import JobContext, WorkerOptions, cli, JobProcess
-from livekit.agents.llm import (
-    ChatContext,
-    ChatMessage,
-)
+from livekit.agents.llm import ChatContext, ChatMessage
 from livekit.agents.voice_assistant import VoiceAssistant
 from livekit.plugins import deepgram, silero, cartesia, openai
 
-import os
+class AIVoiceAssistant:
+    def __init__(self):
+        self.vad = None
+        self.assistant = None
 
+    def initialize_vad(self, proc: JobProcess):
+        """Initialize Voice Activity Detection"""
+        proc.userdata["vad"] = silero.VAD.load()
+        self.vad = proc.userdata["vad"]
+
+    def create_initial_context(self):
+        """Create initial chat context"""
+        return ChatContext(
+            messages=[
+                ChatMessage(
+                    role="system",
+                    content="You are a voice assistant. Pretend we're having a human conversation, no special formatting or headings, just natural speech.",
+                )
+            ]
+        )
+
+    def setup_assistant(self, vad):
+        """Setup voice assistant with all required components"""
+        return VoiceAssistant(
+            vad=vad,
+            stt=deepgram.STT(),
+            llm=openai.LLM(
+                base_url="https://api.cerebras.ai/v1",
+                api_key=os.environ.get("CEREBRAS_API_KEY"),
+                model="llama3.1-8b",
+            ),
+            tts=cartesia.TTS(voice="248be419-c632-4f23-adf1-5324ed7dbf1d"),
+            chat_ctx=self.create_initial_context(),
+        )
 
 def prewarm(proc: JobProcess):
-    proc.userdata["vad"] = silero.VAD.load()
-
+    """Prewarm function to initialize VAD"""
+    assistant = AIVoiceAssistant()
+    assistant.initialize_vad(proc)
 
 async def entrypoint(ctx: JobContext):
-    initial_ctx = ChatContext(
-        messages=[
-            ChatMessage(
-                role="system",
-                content="You are a voice assistant. Pretend we're having a human conversation, no special formatting or headings, just natural speech.",
-            )
-        ]
-    )
-
-    assistant = VoiceAssistant(
-        vad=ctx.proc.userdata["vad"],
-        stt=deepgram.STT(),
-        llm=openai.LLM(
-            base_url="https://api.cerebras.ai/v1",
-            api_key=os.environ.get("CEREBRAS_API_KEY"),
-            model="llama3.1-8b",
-        ),
-        tts=cartesia.TTS(voice="248be419-c632-4f23-adf1-5324ed7dbf1d"),
-        chat_ctx=initial_ctx,
-    )
-
+    """Main entrypoint for the voice assistant"""
+    assistant = AIVoiceAssistant()
+    voice_assistant = assistant.setup_assistant(ctx.proc.userdata["vad"])
+    
     await ctx.connect()
-    assistant.start(ctx.room)
+    voice_assistant.start(ctx.room)
     await asyncio.sleep(1)
-    await assistant.say("Hi there, how are you doing today?", allow_interruptions=True)
-
+    await voice_assistant.say("Hi there, how are you doing today?", allow_interruptions=True)
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
