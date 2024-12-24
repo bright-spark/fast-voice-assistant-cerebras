@@ -9,9 +9,7 @@ from livekit.agents.llm import (
 from livekit.agents.voice_assistant import VoiceAssistant
 from livekit.plugins import deepgram, silero, cartesia, openai
 
-from dotenv import load_dotenv
-
-load_dotenv()
+import os
 
 
 def prewarm(proc: JobProcess):
