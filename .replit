@@ -15,9 +15,10 @@ run = ["sh", "-c", "python main.py dev"]
 language = "python3"
 
 [[ports]]
-localPort = 37259
+localPort = 35941
 externalPort = 80
 
 [[ports]]
-localPort = 45585
+localPort = 44329
 externalPort = 3000
+
