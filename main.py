@@ -7,14 +7,20 @@ from livekit.agents.voice_assistant import VoiceAssistant
 from livekit.plugins import deepgram, silero, cartesia, openai
 
 class AIVoiceAssistant:
-    def __init__(self):
-        self.vad = None
-        self.assistant = None
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(AIVoiceAssistant, cls).__new__(cls)
+            cls._instance.vad = None
+            cls._instance.assistant = None
+        return cls._instance
 
     def initialize_vad(self, proc: JobProcess):
         """Initialize Voice Activity Detection"""
-        proc.userdata["vad"] = silero.VAD.load()
-        self.vad = proc.userdata["vad"]
+        if self.vad is None:
+            proc.userdata["vad"] = silero.VAD.load()
+            self.vad = proc.userdata["vad"]
 
     def create_initial_context(self):
         """Create initial chat context"""
@@ -29,17 +35,19 @@ class AIVoiceAssistant:
 
     def setup_assistant(self, vad):
         """Setup voice assistant with all required components"""
-        return VoiceAssistant(
-            vad=vad,
-            stt=deepgram.STT(),
-            llm=openai.LLM(
-                base_url="https://api.cerebras.ai/v1",
-                api_key=os.environ.get("CEREBRAS_API_KEY"),
-                model="llama3.1-8b",
-            ),
-            tts=cartesia.TTS(voice="248be419-c632-4f23-adf1-5324ed7dbf1d"),
-            chat_ctx=self.create_initial_context(),
-        )
+        if self.assistant is None:
+            self.assistant = VoiceAssistant(
+                vad=vad,
+                stt=deepgram.STT(),
+                llm=openai.LLM(
+                    base_url="https://api.cerebras.ai/v1",
+                    api_key=os.environ.get("CEREBRAS_API_KEY"),
+                    model="llama3.1-8b",
+                ),
+                tts=cartesia.TTS(voice="248be419-c632-4f23-adf1-5324ed7dbf1d"),
+                chat_ctx=self.create_initial_context(),
+            )
+        return self.assistant
 
 def prewarm(proc: JobProcess):
     """Prewarm function to initialize VAD"""
