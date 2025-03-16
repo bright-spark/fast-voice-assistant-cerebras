@@ -4,11 +4,11 @@ import asyncio
 from livekit.agents import JobContext, WorkerOptions, cli, JobProcess
 from livekit.agents.llm import ChatContext, ChatMessage
 from livekit.agents.voice_assistant import VoiceAssistant
-from livekit.plugins import silero, openai, azure
+from livekit.plugins import deepgram, silero, cartesia, openai
 
 class AIVoiceAssistant:
     _instance = None
-
+    
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(AIVoiceAssistant, cls).__new__(cls)
@@ -38,19 +38,13 @@ class AIVoiceAssistant:
         if self.assistant is None:
             self.assistant = VoiceAssistant(
                 vad=vad,
-                stt=azure.STT(
-                  speech_key=os.environ.get("AZURE_SPEECH_KEY"),
-                  speech_region=os.environ.get("AZURE_SPEECH_REGION"),
-                ),
+                stt=deepgram.STT(),
                 llm=openai.LLM(
                     base_url="https://api.cerebras.ai/v1",
                     api_key=os.environ.get("CEREBRAS_API_KEY"),
                     model="llama3.1-8b",
                 ),
-                tts=azure.TTS(
-                  speech_key=os.environ.get("AZURE_SPEECH_KEY"),
-                  speech_region=os.environ.get("AZURE_SPEECH_REGION"),
-                ),
+                tts=cartesia.TTS(voice="248be419-c632-4f23-adf1-5324ed7dbf1d"),
                 chat_ctx=self.create_initial_context(),
             )
         return self.assistant
@@ -64,7 +58,7 @@ async def entrypoint(ctx: JobContext):
     """Main entrypoint for the voice assistant"""
     assistant = AIVoiceAssistant()
     voice_assistant = assistant.setup_assistant(ctx.proc.userdata["vad"])
-
+    
     await ctx.connect()
     voice_assistant.start(ctx.room)
     await asyncio.sleep(1)

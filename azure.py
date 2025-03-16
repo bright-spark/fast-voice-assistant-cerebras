@@ -39,17 +39,17 @@ class AIVoiceAssistant:
             self.assistant = VoiceAssistant(
                 vad=vad,
                 stt=azure.STT(
-                  speech_key=os.environ.get("AZURE_SPEECH_KEY"),
-                  speech_region=os.environ.get("AZURE_SPEECH_REGION"),
+                  speech_key=os.environ.get("AZURE_OPENAI_API_KEY"),
+                  speech_region=os.environ.get("AZURE_STT_REGION"),
                 ),
                 llm=openai.LLM(
                     base_url="https://api.cerebras.ai/v1",
                     api_key=os.environ.get("CEREBRAS_API_KEY"),
                     model="llama3.1-8b",
                 ),
-                tts=azure.TTS(
-                  speech_key=os.environ.get("AZURE_SPEECH_KEY"),
-                  speech_region=os.environ.get("AZURE_SPEECH_REGION"),
+                tts=tts.TTS.create_azure_client(
+                  model="tts-1",
+                  voice="alloy",
                 ),
                 chat_ctx=self.create_initial_context(),
             )
