@@ -1,8 +1,10 @@
-azure-cognitiveservices-speech==1.41.1
+
 livekit-agents
 livekit-plugins-azure
 livekit-plugins-openai
 livekit-plugins-deepgram
 livekit-plugins-silero
 livekit-plugins-cartesia
+azure-cognitiveservices-speech==1.31.0
+azure>=4.0.0
 python-dotenv

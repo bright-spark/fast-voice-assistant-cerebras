@@ -22,3 +22,15 @@ externalPort = 80
 localPort = 44329
 externalPort = 3000
 
+[workflows]
+runButton = "Run Voice Assistant"
+
+[[workflows.workflow]]
+name = "Run Voice Assistant"
+author = 11027186
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py dev"
+
