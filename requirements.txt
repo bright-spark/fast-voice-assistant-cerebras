@@ -2,9 +2,6 @@
 livekit-agents
 livekit-plugins-azure
 livekit-plugins-openai
-livekit-plugins-deepgram
 livekit-plugins-silero
-livekit-plugins-cartesia
-azure-cognitiveservices-speech==1.41.1
-azure>=4.0.0
+microsoft-cognitiveservices-speech==1.41.1
 python-dotenv
