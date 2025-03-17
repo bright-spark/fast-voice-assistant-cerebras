@@ -1,7 +1,6 @@
-
+python-dotenv
+azure-cognitiveservices-speech
 livekit-agents
 livekit-plugins-azure
 livekit-plugins-openai
 livekit-plugins-silero
-microsoft-cognitiveservices-speech==1.41.1
-python-dotenv

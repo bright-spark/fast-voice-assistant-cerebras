@@ -9,18 +9,11 @@ language = "python3"
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "python main.py dev"]
+run = ["sh", "-c", "python main.py"]
+deploymentTarget = "cloudrun"
 
 [unitTest]
 language = "python3"
-
-[[ports]]
-localPort = 35941
-externalPort = 80
-
-[[ports]]
-localPort = 44329
-externalPort = 3000
 
 [workflows]
 runButton = "Run Voice Assistant"
@@ -33,4 +26,3 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py dev"
-
