@@ -1,25 +1,39 @@
-# Insanely fast AI voice assistant in 50 LOC
 
-Demo: [https://cerebras.vercel.app](https://cerebras.vercel.app)
+# Kiki - AI Voice Assistant
 
-This repo contains everything you need to run your own AI voice assistant that responds to you in less than 500ms.
+A fast and responsive AI voice assistant that helps kids with homework, studies, and learning. Kiki has the personality of a friendly teenage girl who's knowledgeable and always ready to help.
 
-It uses:
-- 🌐 [LiveKit](https://github.com/livekit) transport
-- 👂 [Deepgram](https://deepgram.com/) STT
-- 🧠 [Cerebras](https://inference.cerebras.ai/) LLM
-- 🗣️ [Cartesia](https://cartesia.ai/) TTS
+## Features
 
-## Run the assistant
+- 🎙️ Natural voice conversations
+- 🧠 Smart responses with personality
+- 📚 Homework and study assistance
+- ⚡ Fast response time (<500ms)
+- 🎮 Knowledge of games and fun topics
 
-1. `python -m venv .venv`
-2. `source .venv/bin/activate`
-3. `pip install -r requirements.txt`
-4. `cp .env.example .env`
-5. add values for keys in `.env`
-6. `python main.py dev`
+## Technology
 
-## Run a client
+- Voice Activity Detection (VAD)
+- Speech-to-Text (STT) via Azure
+- Language Model (LLM) via Azure OpenAI
+- Text-to-Speech (TTS) via Azure
 
-1. Go to the [playground](https://agents-playground.livekit.io/#cam=0&mic=1&video=0&audio=1&chat=0&theme_color=amber) (code [here](https://github.com/livekit/agents-playground))
-2. Choose the same LiveKit Cloud project you used in the agent's `.env` and click `Connect`
+## Getting Started
+
+1. Click the "Run" button to start the voice assistant
+2. Connect to the voice interface using the LiveKit playground
+3. Start talking with Kiki!
+
+## Environment Variables
+
+Make sure to set these variables in the Secrets tab:
+- `AZURE_SPEECH_KEY`
+- `AZURE_SPEECH_REGION`
+- `AZURE_OPENAI_API_KEY`
+- `AZURE_OPENAI_ENDPOINT`
+- `AZURE_OPENAI_DEPLOYMENT`
+- `AZURE_OPENAI_API_VERSION`
+
+## License
+
+MIT License - See LICENSE file for details
